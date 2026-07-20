@@ -6,7 +6,7 @@ export const employees = [
     color: "#e96a4b",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "DevOps Engineer",
     groupe: "Groupe A",
     situationContractuelle: "CDI",
@@ -19,7 +19,7 @@ export const employees = [
     quality: 89,
     attendance: 96,
     lateness: 5,
-    leave: 10,  
+    leave: 10,
     diploma: "MSc Cloud Computing",
     email: "nadia.bensalem@gpi.com",
     phone: "+216 23 456 781",
@@ -47,7 +47,7 @@ export const employees = [
     color: "#4b8ee9",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "Frontend Engineer",
     groupe: "Groupe B",
     situationContractuelle: "CDD",
@@ -88,7 +88,7 @@ export const employees = [
     color: "#9b59b6",
     profil: "Stagiaire",
     statut: "Actif",
-    
+
     fonction: "HR Business Partner",
     groupe: "Groupe A",
     situationContractuelle: "Stage",
@@ -129,7 +129,6 @@ export const employees = [
     color: "#2fa084",
     profil: "Collaborateur",
     statut: "Inactif",
-    
     fonction: "Backend Engineer",
     groupe: "Groupe B",
     situationContractuelle: "CDI",
@@ -170,7 +169,7 @@ export const employees = [
     color: "#2d8c89",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "Data Scientist",
     groupe: "Groupe A",
     situationContractuelle: "CDI",
@@ -211,7 +210,7 @@ export const employees = [
     color: "#7654b8",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "Designer Produit",
     groupe: "Groupe B",
     situationContractuelle: "CIVP",
@@ -252,7 +251,7 @@ export const employees = [
     color: "#dc9b3d",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "Développeur Backend",
     groupe: "Groupe B",
     situationContractuelle: "CIVP",
@@ -293,7 +292,7 @@ export const employees = [
     color: "#4982c4",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "HR Business Partner",
     groupe: "Groupe A",
     situationContractuelle: "CIVP",
@@ -334,7 +333,7 @@ export const employees = [
     color: "#d75c7b",
     profil: "Collaborateur",
     statut: "Actif",
-    
+
     fonction: "Ingénieur Commercial",
     groupe: "Groupe A",
     situationContractuelle: "CIVP",
@@ -398,6 +397,3 @@ export const chartTooltip = {
   boxShadow: "0 8px 20px rgba(27, 42, 65, .08)",
   fontSize: 12,
 };
-
-
-

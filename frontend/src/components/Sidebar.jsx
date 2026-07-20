@@ -174,5 +174,12 @@ const styles = {
     borderRadius: 11,
     background: "rgba(255,255,255,.08)",
   }),
-  userCopy: { minWidth: 0, flex: 1, display: "grid", gap: 2, fontSize: 11, color: "#dce9ff" },
+  userCopy: {
+    minWidth: 0,
+    flex: 1,
+    display: "grid",
+    gap: 2,
+    fontSize: 11,
+    color: "#dce9ff",
+  },
 };

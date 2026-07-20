@@ -52,11 +52,7 @@ export default function DashboardView({ onNavigate, sidebarCollapsed }) {
       </section>
 
       <section style={styles.rankGrid}>
-        <RankChart
-          dataKey="score"
-          title="Meilleurs scores"
-          accent="#e96a4b"
-        />
+        <RankChart dataKey="score" title="Meilleurs scores" accent="#e96a4b" />
         <RankChart
           dataKey="productivity"
           title="Meilleures Productivités"

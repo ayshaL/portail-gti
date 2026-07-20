@@ -36,8 +36,8 @@ export default function App() {
       )}
       {view === "filtemp" && (
         <FilterEmployees
-          // onNavigate={navigate}
-          // sidebarCollapsed={sidebarCollapsed}
+        // onNavigate={navigate}
+        // sidebarCollapsed={sidebarCollapsed}
         />
       )}
       {view === "detail" && (

@@ -193,7 +193,8 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
             onClick={() => onNavigate("employees")}
             style={styles.exploreButton}
           >
-            Explorer les classements<ChevronRight size={16} />
+            Explorer les classements
+            <ChevronRight size={16} />
           </button>
         </article>
       </section>
@@ -203,7 +204,9 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
           <div style={styles.panelHeading}>
             <div>
               <h2 style={styles.panelTitle}>Performance sur 6 mois</h2>
-              <p style={styles.panelSubtitle}>Tendence productivité & qualité</p>
+              <p style={styles.panelSubtitle}>
+                Tendence productivité & qualité
+              </p>
             </div>
             <span style={styles.scorePill}>
               <ArrowUpRight size={14} /> Progès

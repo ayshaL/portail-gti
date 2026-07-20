@@ -47,11 +47,7 @@ export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
           value="170"
           tone="teal"
         />
-        <MetricCard
-          icon={RefreshCcw}
-          label="Taux de turnover"
-          value="5%"
-        />
+        <MetricCard icon={RefreshCcw} label="Taux de turnover" value="5%" />
         <MetricCard
           icon={RefreshCcw}
           label="Taux de rétention"

@@ -161,12 +161,12 @@ export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
       </section>
 
       <FilterEmployees
-              open={filterOpen}
-              onClose={() => setFilterOpen(false)}
-              initialFilters={filters}
-              onApply={setFilters}
-              employees={employees}
-            />
+        open={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        initialFilters={filters}
+        onApply={setFilters}
+        employees={employees}
+      />
     </main>
   );
 }
