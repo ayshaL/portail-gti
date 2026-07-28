@@ -67,7 +67,7 @@ export default function PerformanceChart({
           <YAxis
             yAxisId="right"
             orientation="right"
-            domain={[0, "dataMax"+10]}
+            domain={[0, "dataMax" + 10]}
             tickLine={false}
             axisLine={false}
             tick={{ fill: "#8b95a5", fontSize: 11 }}

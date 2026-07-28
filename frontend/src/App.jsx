@@ -84,7 +84,7 @@ export default function App() {
     if (employee) setSelectedEmployee(employee);
     setView(nextView);
   };
-  
+
   return (
     <div style={styles.shell}>
       <Sidebar

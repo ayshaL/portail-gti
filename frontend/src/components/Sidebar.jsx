@@ -10,7 +10,6 @@ import Avatar from "./Avatar";
 import { employees } from "../data/dashboardData";
 
 function Sidebar({ view, onNavigate, collapsed, onToggle }) {
-
   // const employees = api.getEmployees();
 
   return (
