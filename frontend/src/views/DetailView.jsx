@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -10,18 +11,72 @@ import {
   Phone,
   ChevronRight,
   Sparkles,
+  Bold,
 } from "lucide-react";
 import Avatar from "../components/Avatar";
 import PerformanceChart from "../components/PerformanceChart";
-import { employees, months } from "../data/dashboardData";
+import { employees as mockEmployees } from "../data/dashboardData";
+import { employees_hist } from "../data/mockData";
+import { getEmployeePrediction } from "../services/api";
 
-export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
-  const subject = employee || employees[0];
-  const details = subject.skills ? subject : { ...employees[0], ...subject };
-  const trendData = months.map((item, index) => ({
-    ...item,
-    productivity: Math.max(68, item.productivity - (5 - index)),
-    quality: Math.max(70, item.quality - (4 - index)),
+export default function DetailView({
+  employee,
+  employees,
+  onNavigate,
+  sidebarCollapsed,
+}) {
+  const [prediction, setPrediction] = useState(null);
+  const [predictionError, setPredictionError] = useState(null);
+  const [loadingPrediction, setLoadingPrediction] = useState(false);
+
+  const roster =
+    Array.isArray(employees) && employees.length > 0
+      ? employees
+      : mockEmployees;
+  const subject = employee || roster[0];
+  const details = subject?.skills
+    ? subject
+    : { ...(roster[0] ?? {}), ...(subject ?? {}) };
+  const userHistory =
+    employees_hist.find((item) => item.id === subject?.id)?.history ?? [];
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadPrediction() {
+      setLoadingPrediction(true);
+      setPredictionError(null);
+      try {
+        const employeeId = details.dbId ?? details.id;
+        const result = await getEmployeePrediction(employeeId);
+        if (isMounted) {
+          setPrediction(result);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setPredictionError(error.message);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingPrediction(false);
+        }
+      }
+    }
+
+    loadPrediction();
+    return () => {
+      isMounted = false;
+    };
+  }, [details.id, details.dbId]);
+
+  const trendProdData = userHistory.map((row) => ({
+    month: row.month,
+    productivity: row.productivite,
+    quality: row.qualite,
+  }));
+
+  const trendScoreData = userHistory.map((row) => ({
+    month: row.month,
+    score: row.score,
   }));
 
   return (
@@ -42,16 +97,6 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
             </p>
             <h1 style={styles.profileTitle}>{details.name}</h1>
             <p style={styles.profileRole}>{details.fonction}</p>
-          </div>
-          <div style={styles.profileActions}>
-            {/* <button style={styles.outlineButton}>
-              <Mail size={16} />
-              Envoyer message
-            </button> */}
-            <button style={styles.primaryButton}>
-              <Download size={16} />
-              Télécharger résumé
-            </button>
           </div>
         </section>
       </div>
@@ -87,7 +132,7 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
             </span>
             <div>
               <strong style={{ fontSize: 12 }}>
-                Resume_Nadia_Ben_Salem.pdf
+                Resume {employee.name}.pdf
               </strong>
             </div>
             <Download size={17} />
@@ -170,6 +215,8 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
           </div>
         </article>
 
+        {/* ----------------------------- Perspectives IA ------------------------------- */}
+
         <article style={styles.insight}>
           <div style={styles.heading}>
             <div style={styles.insightIcon}>
@@ -177,20 +224,36 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
             </div>
             <span style={styles.insightLabel}>PERSPECTIVES IA</span>
           </div>
-          <h2 style={styles.insightTitle}>Stable</h2>
+          <h2 style={styles.insightTitle}>
+            {loadingPrediction
+              ? "Chargement..."
+              : predictionError
+                ? "Impossible de prédire"
+                : prediction?.alert
+                  ? "Attention"
+                  : "Estimation"}
+          </h2>
           <p style={styles.insightText}>
-            Votre score prédit est <strong>93</strong> pour le mois suivant. La
-            régularité et la qualité des livraisons s'améliorent.
+            {loadingPrediction &&
+              "Chargement de la prédiction du score pour le mois suivant..."}
+            {predictionError && predictionError}
+            {prediction && !loadingPrediction && !predictionError && (
+              <>
+                Votre score prédit est{" "}
+                <strong>{prediction.predicted_score}</strong> pour le mois
+                suivant. "{prediction.reasons[0]}"
+              </>
+            )}
           </p>
           <div style={styles.confidence}>
-            <span>Confiance de prédition</span>
-            <strong>87%</strong>
+            <span>Source du modèle</span>
+            <strong>{prediction ? "Backend ML" : "N/A"}</strong>
             <div style={styles.confidenceBar}>
               <i style={styles.confidenceProgress} />
             </div>
           </div>
           <button
-            onClick={() => onNavigate("employees")}
+            // onClick={() => onNavigate("employees")}
             style={styles.exploreButton}
           >
             Explorer les classements
@@ -198,6 +261,8 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
           </button>
         </article>
       </section>
+
+      {/* ----------------------------- Courbe prod & qual ------------------------------- */}
 
       <section style={styles.performanceDetail}>
         <article style={styles.panel}>
@@ -212,7 +277,25 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
               <ArrowUpRight size={14} /> Progès
             </span>
           </div>
-          <PerformanceChart data={trendData} height={235} />
+          {/* <PerformanceChart data={trendProdData} height={235} /> */}
+          <PerformanceChart
+            data={trendProdData}
+            lines={[
+              {
+                dataKey: "productivity",
+                name: "Productivité",
+                stroke: "#e96a4b",
+                yAxisId: "left",
+              },
+              {
+                dataKey: "quality",
+                name: "Qualité",
+                stroke: "#2d8c89",
+                yAxisId: "left",
+              },
+            ]}
+            height={235}
+          />
         </article>
 
         {/* <article style={styles.scoreSummary}>
@@ -242,6 +325,31 @@ export default function DetailView({ employee, onNavigate, sidebarCollapsed }) {
             No current intervention required
           </div>
         </article> */}
+
+        {/* ----------------------------- Courbe GPI score ------------------------------- */}
+
+        <article style={styles.panel}>
+          <div style={styles.panelHeading}>
+            <div>
+              <h2 style={styles.panelTitle}>Mon score sur 6 mois</h2>
+            </div>
+            <span style={styles.scorePill}>
+              <ArrowUpRight size={14} /> Progès
+            </span>
+          </div>
+          <PerformanceChart
+            data={trendScoreData}
+            lines={[
+              {
+                dataKey: "score",
+                name: "Score",
+                stroke: "#4b8de9",
+                yAxisId: "left",
+              },
+            ]}
+            height={235}
+          />
+        </article>
       </section>
     </main>
   );
@@ -469,7 +577,8 @@ const styles = {
   },
   performanceDetail: {
     display: "grid",
-    gridTemplateColumns: "minmax(0, 1.75fr) minmax(260px, 0.8fr)",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    // gridTemplateColumns: "minmax(0, 1.75fr) minmax(260px, 0.8fr)",
     gap: 16,
   },
   panelHeading: {

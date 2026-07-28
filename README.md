@@ -42,3 +42,22 @@ gpi-performance-project/
 ├── .gitignore
 └── README.md
 ```
+
+# 1. Préparer les données d'entraînement dans backend/data/historique.csv
+
+# 2. Entraîner le modèle
+
+```
+cd backend
+python -m app.ml.train_model
+```
+
+# 3. Lancer l'API
+
+```
+uvicorn app.main:app --reload --port 8000
+```
+
+# 4. Tester
+
+http://localhost:8000/docs -> interface Swagger auto-générée par FastAPI

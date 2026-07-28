@@ -336,39 +336,6 @@ export default function FilterEmployees({
           />
         </div>
 
-        {/* Seniorité mode */}
-        <div style={styles.radioRow}>
-          <Radio
-            label="Seniroté"
-            checked={draft.senioriteMode === "Seniorité"}
-            onClick={() =>
-              setDraft((d) => ({ ...d, senioriteMode: "Seniorité" }))
-            }
-          />
-          <Radio
-            label="Experience global"
-            checked={draft.senioriteMode === "Experience globale"}
-            onClick={() =>
-              setDraft((d) => ({ ...d, senioriteMode: "Experience globale" }))
-            }
-          />
-        </div>
-
-        {/* Seniorité checkboxes */}
-        <div style={styles.senioriteBox}>
-          <span style={styles.blockLabel}>Seniorité</span>
-          <div style={styles.checkRow}>
-            {["Junior", "Confirmé", "Senior"].map((level) => (
-              <Checkbox
-                key={level}
-                label={level}
-                checked={draft.niveaux.includes(level)}
-                onClick={() => toggleNiveau(level)}
-              />
-            ))}
-          </div>
-        </div>
-
         {/* Tabs */}
         <div style={styles.tabRow}>
           <button
@@ -480,18 +447,6 @@ export default function FilterEmployees({
               <div style={styles.sectionHeader}>
                 <GraduationCap size={16} color="#e96a4b" />
                 <span style={styles.sectionTitle}>Parcours academique</span>
-              </div>
-              <div style={styles.radioRow}>
-                <Radio
-                  label="En alternance"
-                  checked={draft.enAlternance === "Oui"}
-                  onClick={() =>
-                    setDraft((d) => ({
-                      ...d,
-                      enAlternance: d.enAlternance === "Oui" ? "" : "Oui",
-                    }))
-                  }
-                />
               </div>
               <div style={styles.twoCol}>
                 <SelectField

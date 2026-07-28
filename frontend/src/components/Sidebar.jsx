@@ -10,6 +10,9 @@ import Avatar from "./Avatar";
 import { employees } from "../data/dashboardData";
 
 function Sidebar({ view, onNavigate, collapsed, onToggle }) {
+
+  // const employees = api.getEmployees();
+
   return (
     <aside style={styles.sidebar(collapsed)}>
       <div style={styles.inner}>
@@ -71,8 +74,8 @@ function Sidebar({ view, onNavigate, collapsed, onToggle }) {
               <Avatar employee={employees[0]} small />
               {!collapsed && (
                 <div style={styles.userCopy}>
-                  <strong>Nadia Ben Salem</strong>
-                  <span>DevOps Engineer</span>
+                  <strong>{employees[0].name}</strong>
+                  <span>{employees[0].fonction}</span>
                 </div>
               )}
               {!collapsed && <ChevronRight size={16} />}

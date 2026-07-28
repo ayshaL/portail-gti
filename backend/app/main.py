@@ -2,8 +2,10 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import Base, engine
-from app.routers import employees, predictions
+from app.routers import predictions, employees
+from app.models import employee, tables
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,4 +24,5 @@ app.include_router(predictions.router)
 
 @app.get("/")
 def root():
+    """A simple health check — visit http://127.0.0.1:8000/ to confirm it's running."""
     return {"status": "GPI API en ligne"}

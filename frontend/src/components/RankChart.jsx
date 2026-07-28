@@ -8,22 +8,30 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { chartTooltip, rankings } from "../data/dashboardData";
+import { chartTooltip } from "../data/dashboardData";
 
-const styles = {
-  panel: {
-    padding: 23,
-    border: "1px solid #e9edf3",
-    borderRadius: 16,
-    background: "#fff",
-    boxShadow: "0 8px 24px rgba(24,42,71,.04)",
-  },
-  heading: { display: "flex", justifyContent: "space-between" },
-  title: { margin: 0, color: "#1b2a43", fontSize: 15 },
-  subtitle: { margin: "6px 0 0", color: "#8490a2", fontSize: 11 },
-};
+function CustomTooltip({ active, payload, dataKey }) {
+  if (!active || !payload || !payload.length) return null;
 
-export default function RankChart({ dataKey, title, accent }) {
+  const item = payload[0].payload;
+
+  return (
+    <div style={{ ...chartTooltip, minWidth: 160 }}>
+      <div style={styles.tooltipTitle}>{item.name}</div>
+      {item.fonction ? (
+        <div style={styles.tooltipText}>{item.fonction}</div>
+      ) : null}
+      <div style={styles.tooltipText}>
+        {dataKey === "productivity" ? "Productivité" : "Score"}: {item[dataKey]}
+      </div>
+      {dataKey !== "productivity" && item.productivity != null ? (
+        <div style={styles.tooltipText}>Productivité: {item.productivity}</div>
+      ) : null}
+    </div>
+  );
+}
+
+export default function RankChart({ data = [], dataKey, title, accent }) {
   return (
     <article style={styles.panel}>
       <div style={styles.heading}>
@@ -35,7 +43,7 @@ export default function RankChart({ dataKey, title, accent }) {
       </div>
       <ResponsiveContainer width="100%" height={285}>
         <BarChart
-          data={rankings}
+          data={data}
           layout="vertical"
           margin={{ top: 4, right: 24, left: 4, bottom: 0 }}
         >
@@ -48,9 +56,18 @@ export default function RankChart({ dataKey, title, accent }) {
             width={88}
             tick={{ fill: "#637083", fontSize: 11 }}
           />
-          <Tooltip cursor={{ fill: "#f7f8fa" }} contentStyle={chartTooltip} />
+          <Tooltip
+            cursor={{ fill: "#f7f8fa" }}
+            content={({ active, payload }) => (
+              <CustomTooltip
+                active={active}
+                payload={payload}
+                dataKey={dataKey}
+              />
+            )}
+          />
           <Bar dataKey={dataKey} radius={[0, 5, 5, 0]} barSize={14}>
-            {rankings.map((item, index) => (
+            {data.map((item, index) => (
               <Cell key={item.name} fill={index < 3 ? accent : `${accent}88`} />
             ))}
           </Bar>
@@ -59,3 +76,18 @@ export default function RankChart({ dataKey, title, accent }) {
     </article>
   );
 }
+
+const styles = {
+  panel: {
+    padding: 23,
+    border: "1px solid #e9edf3",
+    borderRadius: 16,
+    background: "#fff",
+    boxShadow: "0 8px 24px rgba(24,42,71,.04)",
+  },
+  heading: { display: "flex", justifyContent: "space-between" },
+  title: { margin: 0, color: "#1b2a43", fontSize: 15 },
+  subtitle: { margin: "6px 0 0", color: "#8490a2", fontSize: 11 },
+  tooltipTitle: { fontSize: 12, fontWeight: 700, marginBottom: 6 },
+  tooltipText: { fontSize: 11, color: "#637083", marginBottom: 4 },
+};

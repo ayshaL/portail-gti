@@ -2,12 +2,19 @@ export const employees = [
   {
     id: "EMP-042",
     name: "Nadia Ben Salem",
+    // name: {
+    //   fName: "Nadia",
+    //   lName: "Ben Salem"
+    // },
     initials: "NB",
     color: "#e96a4b",
     profil: "Collaborateur",
     statut: "Actif",
 
-    fonction: "DevOps Engineer",
+    workMode: "On site",
+    onLeave: false,
+
+    fonction: "Manager",
     groupe: "Groupe A",
     situationContractuelle: "CDI",
     supHierarchique: "Karim Feki",
@@ -18,7 +25,7 @@ export const employees = [
     productivity: 94,
     quality: 89,
     attendance: 96,
-    lateness: 5,
+    lateness: 20,
     leave: 10,
     diploma: "MSc Cloud Computing",
     email: "nadia.bensalem@gpi.com",
@@ -48,6 +55,9 @@ export const employees = [
     profil: "Collaborateur",
     statut: "Actif",
 
+    workMode: "On site",
+    onLeave: false,
+
     fonction: "Frontend Engineer",
     groupe: "Groupe B",
     situationContractuelle: "CDD",
@@ -59,12 +69,12 @@ export const employees = [
     productivity: 85,
     quality: 82,
     attendance: 95,
-    lateness: 2,
+    lateness: 15,
     leave: 5,
     diploma: "BSc Computer Science",
     email: "yassine.trabelsi@gpi.com",
     phone: "+216 22 111 322",
-    birthdate: "",
+    birthdate: "22 Nov 1986",
     parcours: {
       gti: {
         situation: "En mission",
@@ -89,6 +99,9 @@ export const employees = [
     profil: "Stagiaire",
     statut: "Actif",
 
+    workMode: "On site",
+    onLeave: false,
+
     fonction: "HR Business Partner",
     groupe: "Groupe A",
     situationContractuelle: "Stage",
@@ -100,12 +113,12 @@ export const employees = [
     productivity: 78,
     quality: 80,
     attendance: 92,
-    lateness: 1,
+    lateness: 10,
     leave: 2,
     diploma: "MSc Human Resources",
     email: "rania.gharbi@gpi.com",
     phone: "+216 25 908 213",
-    birthdate: "",
+    birthdate: "13 Av",
     parcours: {
       gti: {
         situation: "Affecté",
@@ -170,6 +183,9 @@ export const employees = [
     profil: "Collaborateur",
     statut: "Actif",
 
+    workMode: "On site",
+    onLeave: false,
+
     fonction: "Data Scientist",
     groupe: "Groupe A",
     situationContractuelle: "CDI",
@@ -181,7 +197,7 @@ export const employees = [
     productivity: 91,
     quality: 87,
     attendance: 96,
-    lateness: 1,
+    lateness: 10,
     leave: 11,
     diploma: "Master Ingénierie Data Science",
     email: "youssef.trabelsi@gpi.com",
@@ -211,6 +227,9 @@ export const employees = [
     profil: "Collaborateur",
     statut: "Actif",
 
+    workMode: "On site",
+    onLeave: false,
+
     fonction: "Designer Produit",
     groupe: "Groupe B",
     situationContractuelle: "CIVP",
@@ -222,7 +241,7 @@ export const employees = [
     productivity: 86,
     quality: 91,
     attendance: 94,
-    lateness: 2,
+    lateness: 30,
     leave: 6,
     diploma: "Licence Design d'Interaction",
     email: "ines.gharbi@gpi.com",
@@ -252,6 +271,9 @@ export const employees = [
     profil: "Collaborateur",
     statut: "Actif",
 
+    workMode: "On site",
+    onLeave: false,
+
     fonction: "Développeur Backend",
     groupe: "Groupe B",
     situationContractuelle: "CIVP",
@@ -263,7 +285,7 @@ export const employees = [
     productivity: 90,
     quality: 81,
     attendance: 90,
-    lateness: 5,
+    lateness: 7,
     leave: 4,
     diploma: "Ing. Génie Logiciel",
     email: "karim.jaziri@gpi.com",
@@ -293,6 +315,9 @@ export const employees = [
     profil: "Collaborateur",
     statut: "Actif",
 
+    workMode: "On site",
+    onLeave: false,
+
     fonction: "HR Business Partner",
     groupe: "Groupe A",
     situationContractuelle: "CIVP",
@@ -304,7 +329,7 @@ export const employees = [
     productivity: 82,
     quality: 88,
     attendance: 97,
-    lateness: 0.5,
+    lateness: 0,
     leave: 13,
     diploma: "Master Ressources Humaines",
     email: "amira.messaoud@gpi.com",
@@ -333,6 +358,9 @@ export const employees = [
     color: "#d75c7b",
     profil: "Collaborateur",
     statut: "Actif",
+
+    workMode: "On site",
+    onLeave: false,
 
     fonction: "Ingénieur Commercial",
     groupe: "Groupe A",
@@ -370,12 +398,54 @@ export const employees = [
 ];
 
 export const months = [
-  { month: "Fév", productivity: 74, quality: 78 },
-  { month: "Mar", productivity: 77, quality: 80 },
-  { month: "Avr", productivity: 80, quality: 79 },
-  { month: "Mai", productivity: 83, quality: 84 },
-  { month: "Juin", productivity: 86, quality: 86 },
-  { month: "Juil", productivity: 94, quality: 89 },
+  {
+    month: "Fév",
+    productivity: 74,
+    quality: 78,
+    attendance: 91,
+    lateness: 25,
+    score: 78,
+  },
+  {
+    month: "Mar",
+    productivity: 77,
+    quality: 80,
+    attendance: 92,
+    lateness: 15,
+    score: 90,
+  },
+  {
+    month: "Avr",
+    productivity: 80,
+    quality: 79,
+    attendance: 100,
+    lateness: 4,
+    score: 88,
+  },
+  {
+    month: "Mai",
+    productivity: 83,
+    quality: 84,
+    attendance: 94,
+    lateness: 20,
+    score: 80,
+  },
+  {
+    month: "Juin",
+    productivity: 86,
+    quality: 86,
+    attendance: 110,
+    lateness: 12,
+    score: 86,
+  },
+  {
+    month: "Juil",
+    productivity: 94,
+    quality: 89,
+    attendance: 96,
+    lateness: 8,
+    score: 88,
+  },
 ];
 
 export const rankings = [
@@ -389,6 +459,23 @@ export const rankings = [
   { name: "R. Hachicha", score: 80, productivity: 78 },
   { name: "L. Ayari", score: 79, productivity: 83 },
   { name: "O. Khemiri", score: 77, productivity: 76 },
+];
+
+export const documents = [
+  { id: "DOC-001", title: "Politique de congés", date: "15/07/2026" },
+  { id: "DOC-002", title: "Guide télétravail", date: "01/06/2026" },
+  { id: "DOC-003", title: "Procédure de recrutement", date: "20/05/2026" },
+  { id: "DOC-004", title: "Charte informatique", date: "10/05/2026" },
+];
+
+export const events = [
+  { id: "EV-001", title: "Anniversaire de Nadia Lassoued", date: "30/07/2026" },
+  {
+    id: "EV-002",
+    title: "Anniversaire de Yassine Trabelsi",
+    date: "04/08/2026",
+  },
+  { id: "EV-003", title: "Rendez-vous RH - équipe A", date: "12/08/2026" },
 ];
 
 export const chartTooltip = {

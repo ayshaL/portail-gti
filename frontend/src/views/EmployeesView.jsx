@@ -15,19 +15,28 @@ import {
 import Avatar from "../components/Avatar";
 import PageHeader from "../components/PageHeader";
 import MetricCard from "../components/MetricCard";
-import { employees } from "../data/dashboardData";
+import { employees as mockEmployees } from "../data/dashboardData";
 import FilterEmployees, {
   emptyFilters,
   filterEmployees,
 } from "../components/FilterEmployees";
 
-export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
+export default function EmployeesView({
+  employees,
+  onNavigate,
+  sidebarCollapsed,
+}) {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState(emptyFilters);
   const [filterOpen, setFilterOpen] = useState(false);
 
+  const roster =
+    Array.isArray(employees) && employees.length > 0
+      ? employees
+      : mockEmployees;
+
   const shown = useMemo(
-    () => filterEmployees(employees, filters, query),
+    () => filterEmployees(roster, filters, query),
     [query, filters],
   );
   const activeFilterCount = Object.entries(filters).filter(([key, value]) => {
@@ -38,7 +47,26 @@ export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
 
   return (
     <main style={styles.content(sidebarCollapsed)}>
-      <PageHeader title="Gestion Utilisateurs" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 24,
+          marginBottom: 30,
+        }}
+      >
+        <h1
+          style={{
+            margin: 0,
+            color: "#142543",
+            fontSize: 32,
+            letterSpacing: "-.04em",
+          }}
+        >
+          Gestion Utilisateurs
+        </h1>
+      </div>
       <section style={styles.metricGrid}>
         <MetricCard
           icon={BriefcaseBusiness}
@@ -90,8 +118,8 @@ export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
           <table style={styles.table}>
             <thead>
               <tr>
-                <th style={styles.th}>Nom Utilisateur</th>
                 <th style={styles.th}>Utilisateur ID</th>
+                <th style={styles.th}>Nom Utilisateur</th>
                 <th style={styles.th}>Fonction</th>
                 <th style={styles.th}>Diplome</th>
                 <th style={styles.th}>Dernier score</th>
@@ -110,16 +138,14 @@ export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
                     <div style={styles.personCell}>
                       <Avatar employee={employee} small />
                       <div style={styles.personCopy}>
-                        <strong style={styles.personName}>
-                          {employee.name}
-                        </strong>
-                        <span style={styles.personDepartment}>
+                        <strong style={styles.mono}>{employee.id}</strong>
+                        {/* <span style={styles.personDepartment}>
                           {employee.department}
-                        </span>
+                        </span> */}
                       </div>
                     </div>
                   </td>
-                  <td style={styles.mono}>{employee.id}</td>
+                  <td style={styles.personName}>{employee.name}</td>
                   <td style={styles.td}>{employee.fonction}</td>
                   <td style={styles.td}>{employee.diploma}</td>
                   <td style={styles.td}>
@@ -165,7 +191,7 @@ export default function EmployeesView({ onNavigate, sidebarCollapsed }) {
         onClose={() => setFilterOpen(false)}
         initialFilters={filters}
         onApply={setFilters}
-        employees={employees}
+        employees={roster}
       />
     </main>
   );
@@ -252,13 +278,23 @@ const styles = {
     borderRadius: 999,
     padding: "1px 6px",
   },
-  tableWrap: { overflowX: "auto" },
+  tableWrap: {
+    display: "grid",
+    gap: 12,
+    marginTop: 16,
+    maxHeight: 620,
+    overflowY: "auto",
+    paddingRight: 4,
+    overflowX: "auto",
+  },
   table: {
     width: "100%",
     borderCollapse: "collapse",
     minWidth: 880,
   },
   th: {
+    position: "sticky",
+    top: 0,
     background: "#f8f9fa",
     color: "#8793a3",
     textAlign: "left",
@@ -285,9 +321,11 @@ const styles = {
   },
   personCopy: { minWidth: 0 },
   personName: {
+    padding: "13px 20px",
+    borderTop: "1px solid #edf0f2",
     color: "#1c3f76",
     fontSize: 12,
-    display: "block",
+    fontWeight: 600,
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
