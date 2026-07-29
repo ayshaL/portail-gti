@@ -1,20 +1,25 @@
+import { useMemo, useState } from "react";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
   CalendarDays,
   ChevronRight,
   Clock3,
+  Search,
   Sparkles,
   Target,
   FileText,
   User,
   CalendarDays as CalendarIcon,
 } from "lucide-react";
+
 import Avatar from "../components/Avatar";
 import MetricCard from "../components/MetricCard";
 import RankChart from "../components/RankChart";
 import PageHeader from "../components/PageHeader";
 import PerformanceChart from "../components/PerformanceChart";
+import { filterEmployees, emptyFilters } from "../components/FilterEmployees";
+
 import {
   employees as mockEmployees,
   documents,
@@ -31,6 +36,13 @@ export default function DashboardView({
     Array.isArray(employees) && employees.length > 0
       ? employees
       : mockEmployees;
+
+  const [employeeSearch, setEmployeeSearch] = useState("");
+
+  const filteredRoster = useMemo(
+    () => filterEmployees(roster, emptyFilters, employeeSearch),
+    [roster, employeeSearch],
+  );
 
   const historyByMonth = employees_hist.reduce((acc, employee) => {
     employee.history.forEach((row) => {
@@ -127,13 +139,6 @@ export default function DashboardView({
           value="31 jours"
           tone="blue"
         />
-        {/* <MetricCard
-          icon={Target}
-          label="Score Actuel"
-          value="91%"
-          note="Top 8%"
-          tone="violet"
-        /> */}
       </section>
 
       <section style={styles.layout}>
@@ -208,6 +213,7 @@ export default function DashboardView({
             {worstScores.map((employee) => (
               <div key={employee.id} style={styles.worstRow}>
                 <div>
+                  <span style={styles.employeeId}>{employee.id}  |  </span>
                   <strong style={styles.worstName}>{employee.name}</strong>
                   <div style={styles.worstFunction}>{employee.fonction}</div>
                 </div>
@@ -228,22 +234,39 @@ export default function DashboardView({
               </p>
             </div>
           </div>
+
+          <label style={styles.search}>
+            <Search size={15} color="#8490a2" />
+            <input
+              style={styles.searchInput}
+              value={employeeSearch}
+              onChange={(event) => setEmployeeSearch(event.target.value)}
+              placeholder="Recherhe par nom, role ou ID"
+            />
+          </label>
+
           <div style={styles.employeeListScrollable}>
-            {roster.map((employee) => (
-              <div key={employee.id} style={styles.employeeRow}>
-                <div style={styles.employeeInfo}>
-                  <div style={styles.employeeTitle}>
-                    <span style={styles.employeeId}>{employee.id} |</span>
-                    <strong style={styles.employeeName}>{employee.name}</strong>
+            {filteredRoster.length === 0 ? (
+              <p style={styles.searchEmpty}>Aucun collaborateur trouvé.</p>
+            ) : (
+              filteredRoster.map((employee) => (
+                <div key={employee.id} style={styles.employeeRow}>
+                  <div style={styles.employeeInfo}>
+                    <div style={styles.employeeTitle}>
+                      <span style={styles.employeeId}>{employee.id} |</span>
+                      <strong style={styles.employeeName}>
+                        {employee.name}
+                      </strong>
+                    </div>
+                    <div style={styles.employeeContact}>
+                      <span>{employee.phone}</span>
+                      <span>{employee.email}</span>
+                    </div>
                   </div>
-                  <div style={styles.employeeContact}>
-                    <span>{employee.phone}</span>
-                    <span>{employee.email}</span>
-                  </div>
+                  <Avatar employee={employee} small />
                 </div>
-                <Avatar employee={employee} small />
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </article>
 
@@ -320,62 +343,6 @@ export default function DashboardView({
           </article>
         </div>
       </section>
-
-      {/* <section style={styles.layout}>
-        <article style={styles.panel}>
-          <div style={styles.heading}>
-            <div>
-              <h2 style={styles.h2}>Mon évolution</h2>
-              <p style={styles.sub}>Productivité et qualité, derniers 6 mois</p>
-            </div>
-            <span style={styles.scorePill}>
-              <ArrowUpRight size={14} /> +7.2%
-            </span>
-          </div>
-          <div style={styles.legend}>
-            <span style={styles.legendItem}>
-              <i style={styles.orangeDot} />
-              Productivité
-            </span>
-            <span style={styles.legendItem}>
-              <i style={styles.tealDot} />
-              Qualité
-            </span>
-          </div>
-          <PerformanceChart data={months} />
-        </article>
-      </section> */}
-
-      {/* <section style={styles.panel}>
-        <div style={styles.heading}>
-          <div>
-            <h2 style={styles.h2}>Team pulse</h2>
-            <p style={styles.sub}>
-              How your department is performing this month
-            </p>
-          </div>
-          <button onClick={() => onNavigate("employees")} style={styles.button}>
-            View all people <ChevronRight size={15} />
-          </button>
-        </div>
-        <div style={{ marginTop: 16 }}>
-          {employees.slice(0, 4).map((employee) => (
-            <button
-              style={styles.teamMember}
-              key={employee.id}
-              onClick={() => onNavigate("detail", employee)}
-            >
-              <Avatar employee={employee} />
-              <div style={styles.teamMemberCopy}>
-                <strong style={styles.teamMemberName}>{employee.name}</strong>
-                <span style={styles.teamMemberRole}>{employee.role}</span>
-              </div>
-              <b>{employee.score}</b>
-              <ChevronRight size={16} />
-            </button>
-          ))}
-        </div>
-      </section> */}
     </main>
   );
 }
@@ -407,7 +374,12 @@ const styles = {
     background: "#fff",
     boxShadow: "0 8px 24px rgba(24,42,71,.04)",
   },
-  heading: { display: "flex", justifyContent: "space-between", gap: 16 },
+  heading: {
+    padding: "10px 10px 10px",
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 16,
+  },
   h2: { margin: 0, color: "#1b2a43", fontSize: 15 },
   sub: { margin: "6px 0 0", color: "#8490a2", fontSize: 11 },
   scorePill: {
@@ -489,6 +461,31 @@ const styles = {
     maxHeight: 780,
     overflowY: "auto",
     paddingRight: 4,
+  },
+  search: {
+    display: "flex",
+    alignItems: "center",
+    gap: 7,
+    border: "1px solid #dce2eb",
+    borderRadius: 8,
+    padding: "8px 10px",
+    color: "#8390a0",
+    marginTop: 16,
+  },
+  searchInput: {
+    border: 0,
+    outline: 0,
+    width: "100%",
+    fontSize: 12,
+    color: "#1c3f76",
+    fontFamily: "inherit",
+  },
+  searchEmpty: {
+    margin: 0,
+    padding: "18px 4px",
+    textAlign: "center",
+    color: "#8490a2",
+    fontSize: 12,
   },
   employeeRow: {
     display: "flex",

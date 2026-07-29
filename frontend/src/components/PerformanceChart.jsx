@@ -40,7 +40,7 @@ export default function PerformanceChart({
   referenceLines = [],
   height = 255,
 }) {
-  const chartLines = lines ?? defaultLines;
+  const chartLines = lines ;
   const showRightAxis = chartLines.some((line) => line.yAxisId === "right");
 
   return (
@@ -48,19 +48,20 @@ export default function PerformanceChart({
       <LineChart
         data={data}
         margin={{ top: 15, right: 8, bottom: 0, left: -25 }}
+        grid={{ vertical: true, horizontal: true }}
       >
-        <CartesianGrid horizontal={true} vertical={false} stroke="#edf0f3" />
+        <CartesianGrid horizontal={true} vertical={true} stroke="#edf0f3" />
         <XAxis
           dataKey="month"
           tickLine={false}
-          axisLine={false}
+          axisLine={true}
           tick={{ fill: "#8b95a5", fontSize: 12 }}
         />
         <YAxis
           yAxisId="left"
           domain={[0, "dataMax+10"]}
           tickLine={false}
-          axisLine={false}
+          axisLine={true}
           tick={{ fill: "#8b95a5", fontSize: 11 }}
         />
         {showRightAxis ? (

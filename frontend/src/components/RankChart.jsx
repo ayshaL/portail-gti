@@ -31,13 +31,13 @@ function CustomTooltip({ active, payload, dataKey }) {
   );
 }
 
-export default function RankChart({ data = [], dataKey, title, accent }) {
+export default function RankChart({ data = [], dataKey = [], title, accent }) {
   return (
     <article style={styles.panel}>
       <div style={styles.heading}>
         <div>
           <h2 style={styles.title}>{title}</h2>
-          <p style={styles.subtitle}>Top 10 · Juin 2026</p>
+          <p style={styles.subtitle}>Top 10</p>
         </div>
         <Award size={20} color={accent} />
       </div>
@@ -89,5 +89,5 @@ const styles = {
   title: { margin: 0, color: "#1b2a43", fontSize: 15 },
   subtitle: { margin: "6px 0 0", color: "#8490a2", fontSize: 11 },
   tooltipTitle: { fontSize: 12, fontWeight: 700, marginBottom: 6 },
-  tooltipText: { fontSize: 11, color: "#637083", marginBottom: 4 },
+  tooltipText: { fontSize: 11, color: "#333a45", marginBottom: 4 },
 };

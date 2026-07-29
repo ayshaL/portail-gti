@@ -1,6 +1,6 @@
 export const employees = [
   {
-    id: "EMP-042",
+    id: "042",
     name: "Nadia Ben Salem",
     // name: {
     //   fName: "Nadia",
@@ -48,7 +48,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-017",
+    id: "017",
     name: "Yassine Trabelsi",
     initials: "YT",
     color: "#4b8ee9",
@@ -92,7 +92,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-058",
+    id: "058",
     name: "Rania Gharbi",
     initials: "RG",
     color: "#9b59b6",
@@ -136,7 +136,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-091",
+    id: "091",
     name: "Sami Kort",
     initials: "SK",
     color: "#2fa084",
@@ -176,7 +176,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-118",
+    id: "118",
     name: "Youssef Trabelsi",
     initials: "YT",
     color: "#2d8c89",
@@ -220,7 +220,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-067",
+    id: "067",
     name: "Ines Gharbi",
     initials: "IG",
     color: "#7654b8",
@@ -264,7 +264,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-092",
+    id: "092",
     name: "Karim Jaziri",
     initials: "KJ",
     color: "#dc9b3d",
@@ -308,7 +308,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-203",
+    id: "203",
     name: "Amira Messaoud",
     initials: "AM",
     color: "#4982c4",
@@ -352,7 +352,7 @@ export const employees = [
     },
   },
   {
-    id: "EMP-156",
+    id: "156",
     name: "Sami Bouaziz",
     initials: "SB",
     color: "#d75c7b",
@@ -483,4 +483,5 @@ export const chartTooltip = {
   borderRadius: 10,
   boxShadow: "0 8px 20px rgba(27, 42, 65, .08)",
   fontSize: 12,
+  background: "#ffffffd3",
 };

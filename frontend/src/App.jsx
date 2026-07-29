@@ -32,6 +32,8 @@ export const formatBackendEmployee = (employee) => {
     score: employee?.score ?? mock?.score ?? 0,
     productivity: employee?.productivity ?? mock?.productivity ?? 0,
     quality: employee?.quality ?? mock?.quality ?? 0,
+    depassement: employee?.depassement ?? mock?.depassement ?? 0,
+    assiduite: employee?.assiduite ?? mock?.assiduite ?? 0,
   };
   return formatted;
 };

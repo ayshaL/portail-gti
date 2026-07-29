@@ -43,8 +43,10 @@ export async function getEmployees() {
           email: profile?.email ?? mock?.email ?? "",
           phone: profile?.phone ?? mock?.phone ?? "",
           score: latest?.score ?? mock?.score ?? 0,
-          role: profile?.fonction ?? mock?.fonction ?? "",
-        };
+          productivity: latest?.prod ?? mock?.productivity ?? 0,
+          quality: latest?.qual ?? mock?.quality ?? 0,
+          depassement: latest?.depassement ?? mock?.depassement ?? 0,
+          assiduite: latest?.assiduite ?? mock?.assiduite ?? 0,        };
       } catch {
         return null;
       }

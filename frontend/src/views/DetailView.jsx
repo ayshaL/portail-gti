@@ -16,8 +16,7 @@ import {
 import Avatar from "../components/Avatar";
 import PerformanceChart from "../components/PerformanceChart";
 import { employees as mockEmployees } from "../data/dashboardData";
-import { employees_hist } from "../data/mockData";
-import { getEmployeePrediction } from "../services/api";
+import { getEmployeePrediction, getEmployeeRecords } from "../services/api";
 
 export default function DetailView({
   employee,
@@ -28,6 +27,8 @@ export default function DetailView({
   const [prediction, setPrediction] = useState(null);
   const [predictionError, setPredictionError] = useState(null);
   const [loadingPrediction, setLoadingPrediction] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [historyError, setHistoryError] = useState(null);
 
   const roster =
     Array.isArray(employees) && employees.length > 0
@@ -37,11 +38,26 @@ export default function DetailView({
   const details = subject?.skills
     ? subject
     : { ...(roster[0] ?? {}), ...(subject ?? {}) };
-  const userHistory =
-    employees_hist.find((item) => item.id === subject?.id)?.history ?? [];
 
   useEffect(() => {
     let isMounted = true;
+
+    async function loadHistory() {
+      setHistoryError(null);
+      try {
+        const employeeId = details.dbId ?? details.id;
+        const result = await getEmployeeRecords(employeeId);
+        if (isMounted) {
+          setHistory(Array.isArray(result) ? result : []);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setHistoryError(error.message);
+          setHistory([]);
+        }
+      }
+    }
+
     async function loadPrediction() {
       setLoadingPrediction(true);
       setPredictionError(null);
@@ -62,20 +78,25 @@ export default function DetailView({
       }
     }
 
+    loadHistory();
     loadPrediction();
     return () => {
       isMounted = false;
     };
   }, [details.id, details.dbId]);
 
-  const trendProdData = userHistory.map((row) => ({
-    month: row.month,
-    productivity: row.productivite,
-    quality: row.qualite,
+  const recentHistory = [...history]
+    .sort((a, b) => (a.period || "").localeCompare(b.period || ""))
+    .slice(-6);
+
+  const trendProdData = recentHistory.map((row) => ({
+    month: row.period,
+    productivity: row.prod,
+    quality: row.qual,
   }));
 
-  const trendScoreData = userHistory.map((row) => ({
-    month: row.month,
+  const trendScoreData = recentHistory.map((row) => ({
+    month: row.period,
     score: row.score,
   }));
 
@@ -246,7 +267,7 @@ export default function DetailView({
             )}
           </p>
           <div style={styles.confidence}>
-            <span>Source du modèle</span>
+            <span>Source du modèle </span>
             <strong>{prediction ? "Backend ML" : "N/A"}</strong>
             <div style={styles.confidenceBar}>
               <i style={styles.confidenceProgress} />
@@ -256,7 +277,7 @@ export default function DetailView({
             // onClick={() => onNavigate("employees")}
             style={styles.exploreButton}
           >
-            Explorer les classements
+            Explorer les recommandations IA
             <ChevronRight size={16} />
           </button>
         </article>

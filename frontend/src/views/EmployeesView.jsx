@@ -35,6 +35,20 @@ export default function EmployeesView({
       ? employees
       : mockEmployees;
 
+  const availabilitySummary = roster.reduce(
+    (acc, employee) => {
+      if (employee.onLeave) {
+        acc.leave += 1;
+      } else if (employee.workMode === "Remote") {
+        acc.remote += 1;
+      } else {
+        acc.onSite += 1;
+      }
+      return acc;
+    },
+    { onSite: 0, remote: 0, leave: 0 },
+  );
+
   const shown = useMemo(
     () => filterEmployees(roster, filters, query),
     [query, filters],
@@ -71,7 +85,7 @@ export default function EmployeesView({
         <MetricCard
           icon={BriefcaseBusiness}
           label="Effectif total"
-          value="170"
+          value={availabilitySummary.onSite + availabilitySummary.remote + availabilitySummary.leave}
           tone="teal"
         />
         <MetricCard icon={RefreshCcw} label="Taux de turnover" value="5%" />
@@ -84,7 +98,7 @@ export default function EmployeesView({
         <MetricCard
           icon={FileText}
           label="Types de contracts"
-          value="90"
+          value="70"
           note="CIVP"
           tone="violet"
         />
@@ -129,11 +143,7 @@ export default function EmployeesView({
             </thead>
             <tbody>
               {shown.map((employee) => (
-                <tr
-                  key={employee.id}
-                  // onClick={() => onNavigate("detail", employee)}
-                  style={styles.row}
-                >
+                <tr key={employee.id} style={styles.row}>
                   <td style={styles.td}>
                     <div style={styles.personCell}>
                       <Avatar employee={employee} small />
