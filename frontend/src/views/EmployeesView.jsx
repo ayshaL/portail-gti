@@ -1,15 +1,17 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   CalendarDays,
   ChevronRight,
+  ChevronLeft,
   Search,
   Eye,
   FileText,
   PencilLine,
-  Trash2,
+  CircleX,
   BriefcaseBusiness,
   PersonStanding,
   RefreshCcw,
+  UserRoundPlus,
   SlidersHorizontal,
 } from "lucide-react";
 import Avatar from "../components/Avatar";
@@ -21,6 +23,22 @@ import FilterEmployees, {
   filterEmployees,
 } from "../components/FilterEmployees";
 
+// get pagination in list 1-2-...-8
+function getPageList(current, total) {
+  if (total <= 3) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const keep = new Set([1, current, current + 1, total]);
+  const pages = [...keep].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+
+  const withEllipsis = [];
+  pages.forEach((n, i) => {
+    if (i > 0 && n - pages[i - 1] > 1) withEllipsis.push("...");
+    withEllipsis.push(n);
+  });
+  return withEllipsis;
+}
+
 export default function EmployeesView({
   employees,
   onNavigate,
@@ -29,6 +47,10 @@ export default function EmployeesView({
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState(emptyFilters);
   const [filterOpen, setFilterOpen] = useState(false);
+
+  // pagination state
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   const roster =
     Array.isArray(employees) && employees.length > 0
@@ -53,6 +75,18 @@ export default function EmployeesView({
     () => filterEmployees(roster, filters, query),
     [query, filters],
   );
+
+  const pageCount = Math.max(1, Math.ceil(shown.length / pageSize));
+  const currentPage = Math.min(page, pageCount);
+
+  const paginated = useMemo(
+    () => shown.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [shown, currentPage],
+  );
+
+  useEffect(() => {
+    setPage(1);
+  }, [query, filters]);
   const activeFilterCount = Object.entries(filters).filter(([key, value]) => {
     if (key === "niveaux") return value.length > 0;
     if (key === "senioriteMode") return false;
@@ -85,7 +119,11 @@ export default function EmployeesView({
         <MetricCard
           icon={BriefcaseBusiness}
           label="Effectif total"
-          value={availabilitySummary.onSite + availabilitySummary.remote + availabilitySummary.leave}
+          value={
+            availabilitySummary.onSite +
+            availabilitySummary.remote +
+            availabilitySummary.leave
+          }
           tone="teal"
         />
         <MetricCard icon={RefreshCcw} label="Taux de turnover" value="5%" />
@@ -116,16 +154,26 @@ export default function EmployeesView({
             />
           </label>
 
-          <button
-            style={styles.filterButton}
-            onClick={() => setFilterOpen(true)}
-          >
-            <SlidersHorizontal size={15} />
-            Filtre
-            {activeFilterCount > 0 && (
-              <span style={styles.filterBadge}>{activeFilterCount}</span>
-            )}
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              style={styles.filterButton}
+              // onClick={() => onNavigate("add")}
+            >
+              <UserRoundPlus size={15} color="#cf573c" />
+              Ajouter un Collaborateur
+            </button>
+
+            <button
+              style={{...styles.filterButton, background: "#e96a4b", color: "#fff"}}
+              onClick={() => setFilterOpen(true)}
+            >
+              <SlidersHorizontal size={15} />
+              Filtre
+              {activeFilterCount > 0 && (
+                <span style={styles.filterBadge}>{activeFilterCount}</span>
+              )}
+            </button>
+          </div>
         </div>
 
         <div style={styles.tableWrap}>
@@ -142,7 +190,7 @@ export default function EmployeesView({
               </tr>
             </thead>
             <tbody>
-              {shown.map((employee) => (
+              {paginated.map((employee) => (
                 <tr key={employee.id} style={styles.row}>
                   <td style={styles.td}>
                     <div style={styles.personCell}>
@@ -187,12 +235,68 @@ export default function EmployeesView({
                       onClick={() => onNavigate("detail", employee)}
                     />
                     <PencilLine color="#2a8b22" size={13} />
-                    <Trash2 color="#d22929" size={13} />
+                    <CircleX color="#d22929" size={13} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div style={styles.paginationBar}>
+          <span style={styles.paginationInfo}>
+            {shown.lenght === 0
+              ? "Aucun résultat"
+              : `${(currentPage - 1) * pageSize + 1}–${Math.min(
+                  currentPage * pageSize,
+                  shown.length,
+                )} sur ${shown.length}`}
+          </span>
+          <div style={styles.paginationControls}>
+            <button
+              type="button"
+              style={{
+                ...styles.pageButton,
+                ...(currentPage === 1 ? styles.pageButtonDisabled : {}),
+              }}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={14} />
+            </button>
+
+            {getPageList(currentPage, pageCount).map((item, index) =>
+              item === "..." ? (
+                <span key={`ellipsis-${index}`} style={styles.pageEllipsis}>
+                  …
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  key={item}
+                  style={{
+                    ...styles.pageButton,
+                    ...(item === currentPage ? styles.pageButtonActive : {}),
+                  }}
+                  onClick={() => setPage(item)}
+                >
+                  {item}
+                </button>
+              ),
+            )}
+
+            <button
+              type="button"
+              style={{
+                ...styles.pageButton,
+                ...(currentPage === pageCount ? styles.pageButtonDisabled : {}),
+              }}
+              onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+              disabled={currentPage === pageCount}
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
       </section>
 
@@ -296,6 +400,61 @@ const styles = {
     overflowY: "auto",
     paddingRight: 4,
     overflowX: "auto",
+  },
+  paginationBar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+    padding: "14px 21px",
+    borderTop: "1px solid #edf0f2",
+  },
+  paginationInfo: {
+    color: "#8490a2",
+    fontSize: 11,
+  },
+  paginationControls: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+  },
+  pageIndicator: {
+    color: "#42516a",
+    fontSize: 12,
+    fontWeight: 600,
+    minWidth: 78,
+    textAlign: "center",
+  },
+  pageButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 28,
+    height: 28,
+    border: "1px solid #dce2eb",
+    borderRadius: 7,
+    background: "#fff",
+    color: "#42516a",
+    cursor: "pointer",
+  },
+  pageButtonDisabled: {
+    opacity: 0.4,
+    cursor: "not-allowed",
+  },
+    pageButtonActive: {
+    background: "#e96a4b",
+    borderColor: "#e96a4b",
+    color: "#fff",
+  },
+  pageEllipsis: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: 34,
+    height: 34,
+    color: "#8490a2",
+    fontSize: 13,
+    fontWeight: 700,
   },
   table: {
     width: "100%",
