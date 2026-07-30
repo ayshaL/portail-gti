@@ -22,6 +22,7 @@ import FilterEmployees, {
   emptyFilters,
   filterEmployees,
 } from "../components/FilterEmployees";
+import AddEmployee from "../components/AddEmployee";
 
 // get pagination in list 1-2-...-8
 function getPageList(current, total) {
@@ -29,7 +30,9 @@ function getPageList(current, total) {
     return Array.from({ length: total }, (_, i) => i + 1);
   }
   const keep = new Set([1, current, current + 1, total]);
-  const pages = [...keep].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+  const pages = [...keep]
+    .filter((n) => n >= 1 && n <= total)
+    .sort((a, b) => a - b);
 
   const withEllipsis = [];
   pages.forEach((n, i) => {
@@ -45,17 +48,23 @@ export default function EmployeesView({
   sidebarCollapsed,
 }) {
   const [query, setQuery] = useState("");
+  // filter
   const [filters, setFilters] = useState(emptyFilters);
   const [filterOpen, setFilterOpen] = useState(false);
+  // add collaborateur
+  const [addOpen, setAddOpen] = useState(false);
+  const [addedEmployees, setAddedEmployees] = useState([]);
 
   // pagination state
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const roster =
-    Array.isArray(employees) && employees.length > 0
+  const roster = [
+    ...addedEmployees,
+    ...(Array.isArray(employees) && employees.length > 0
       ? employees
-      : mockEmployees;
+      : mockEmployees),
+  ];
 
   const availabilitySummary = roster.reduce(
     (acc, employee) => {
@@ -157,14 +166,18 @@ export default function EmployeesView({
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <button
               style={styles.filterButton}
-              // onClick={() => onNavigate("add")}
+              onClick={() => setAddOpen(true)}
             >
               <UserRoundPlus size={15} color="#cf573c" />
               Ajouter un Collaborateur
             </button>
 
             <button
-              style={{...styles.filterButton, background: "#e96a4b", color: "#fff"}}
+              style={{
+                ...styles.filterButton,
+                background: "#e96a4b",
+                color: "#fff",
+              }}
               onClick={() => setFilterOpen(true)}
             >
               <SlidersHorizontal size={15} />
@@ -307,6 +320,15 @@ export default function EmployeesView({
         onApply={setFilters}
         employees={roster}
       />
+
+      <AddEmployee
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        onAdd={(newEmployee) =>
+          setAddedEmployees((prev) => [newEmployee, ...prev])
+        }
+        employees={roster}
+      />
     </main>
   );
 }
@@ -441,7 +463,7 @@ const styles = {
     opacity: 0.4,
     cursor: "not-allowed",
   },
-    pageButtonActive: {
+  pageButtonActive: {
     background: "#e96a4b",
     borderColor: "#e96a4b",
     color: "#fff",

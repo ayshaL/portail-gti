@@ -4,7 +4,9 @@ import { employees as mockEmployees } from "./data/dashboardData";
 import DashboardView from "./views/DashboardView";
 import DetailView from "./views/DetailView";
 import EmployeesView from "./views/EmployeesView";
+import AuthView from "./views/AuthView";
 import FilterEmployees from "./components/FilterEmployees";
+import AddEmployee from "./components/AddEmployee";
 
 import { getEmployees } from "./services/api";
 
@@ -51,6 +53,7 @@ export default function App() {
   const [selectedEmployee, setSelectedEmployee] = useState(mockEmployees[0]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [employeeError, setEmployeeError] = useState(null);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -86,6 +89,11 @@ export default function App() {
     if (employee) setSelectedEmployee(employee);
     setView(nextView);
   };
+
+    if (!authenticated) {
+    return <AuthView onAuthenticated={() => setAuthenticated(true)} />;
+  }
+
 
   return (
     <div style={styles.shell}>
